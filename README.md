@@ -28,4 +28,5 @@
 直接调用setSpeedLength()可以直接设置我们音量的大小值 <br/>
 我们看一下效果图<br/>
 
-![Image text](https://github.com/boboyuwu/pic/blob/master/pic1.png)
+![Image text](https://github.com/boboyuwu/pic/blob/master/pic1.png) <br/>
+![Image text](https://github.com/boboyuwu/pic/blob/master/pic2.png)
