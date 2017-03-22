@@ -25,4 +25,7 @@
 </RelativeLayout> <br/><br/>
 
 这是布局，直接调用setOnSpeedClickListener（）方法可以设置监听得到速度<br/>
-直接调用setSpeedLength()可以直接设置我们音量的大小值
+直接调用setSpeedLength()可以直接设置我们音量的大小值 <br/>
+我们看一下效果图<br/>
+
+![Image text](https://raw.github.com/boboyuwu/repositpry/master/pic/pic1.png)
