@@ -22,7 +22,7 @@
         android:id="@+id/btn"
         android:layout_height="30dp"/>
 
-</RelativeLayout> <br/br/>
+</RelativeLayout> <br/><br/>
 
 这是布局，直接调用setOnSpeedClickListener（）方法可以设置监听得到速度<br/>
 直接调用setSpeedLength()可以直接设置我们音量的大小值
