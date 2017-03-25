@@ -9,15 +9,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build.VERSION_CODES;
-import android.support.v4.util.SparseArrayCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import static android.view.MotionEvent.ACTION_MOVE;
 
 /**
- * Created by wubo on 2017/3/18.   音乐播放自定义view
+ * Created by wubo on 2017/3/18.   音量view
  */
 
 public class VoiceView extends View {
@@ -29,7 +29,6 @@ public class VoiceView extends View {
     private float mYRound;
     private int mVoiceItemWidth;
 
-    private SparseArrayCompat voiceItems = new SparseArrayCompat();
     private int mVoiceItemHeight;
     private OnSpeedClickListener mOnSpeedClickListener;
     private int mMinimumVoiceHeight;
@@ -40,6 +39,10 @@ public class VoiceView extends View {
     private int mMeasuredWidth;
     private int mMeasuredHeight;
     private int mPointWidth;
+
+    //定义右边设置的bitmap
+    private Bitmap mRightImageBitmap;
+    private int mRightBitmapWidthAndHeight;
 
     public VoiceView(Context context) {
         this(context, null);
@@ -61,7 +64,7 @@ public class VoiceView extends View {
     @TargetApi(VERSION_CODES.KITKAT)
     private void initView() {
         //音量大小默认为1
-        mSpeedLength = 8;
+        mSpeedLength = 5;
         //矩形弧度minimum
         mXRound = 30;
         mYRound = 30;
@@ -72,11 +75,27 @@ public class VoiceView extends View {
         mMinimumVoiceHeight = mVoiceItemHeight+mVoiceItemHeight*1/3;
         mPointBitmap = Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.point));
 
+        //初始化音量控件初始狂宽高大小
+        mMinWidth=100;
+        mMinHeight=30;
+
         mPointWidth = mVoiceItemWidth*2;
         mCurrVolum = 4;
 
+        //右侧图片宽高
+
     }
 
+
+    public void setRightImage(int res){
+        mRightImageBitmap=Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(),res));
+        invalidate();
+    }
+
+    public void setRightImage(Bitmap bitmap){
+        mRightImageBitmap=bitmap;
+        invalidate();
+    }
 
     @TargetApi(VERSION_CODES.KITKAT)
     @Override
@@ -130,16 +149,25 @@ public class VoiceView extends View {
             backgroundPaint.setColor(Color.parseColor("#a4c2f4"));
             canvas.drawRoundRect(0, 0, mMeasuredWidth, mMeasuredHeight, mXRound, mYRound, backgroundPaint);
             //音量栏所需要的上下左右宽距离
-            //减去右边控件之后剩余的长度  再减去左右间距  然后平分音量数量+1
-            mVoiceItemMarginLeft = (mMeasuredWidth - mMeasuredHeight - (mVoiceItemWidth * mSpeedLength))/8;
+            if(mRightImageBitmap!=null){
+                mRightBitmapWidthAndHeight=mMeasuredHeight;
+                //mVoiceItemMarginLeft = (mMeasuredWidth - mMeasuredHeight - (mVoiceItemWidth * mSpeedLength))/(mSpeedLength+1);
+                RectF rectF = new RectF();
+                rectF.set(mMeasuredWidth-mRightBitmapWidthAndHeight,0,mMeasuredWidth,mRightBitmapWidthAndHeight);
+                canvas.drawBitmap(mRightImageBitmap,null,rectF,null);
+                Log.e("wwww","isnull");
+            }else{
+                mRightBitmapWidthAndHeight=0;
+                //mVoiceItemMarginLeft=(mMeasuredWidth - (mVoiceItemWidth * mSpeedLength))/(mSpeedLength+1);
+                Log.e("wwww","isnullNO");
+            }
+            mVoiceItemMarginLeft = (mMeasuredWidth - mRightBitmapWidthAndHeight - (mVoiceItemWidth * mSpeedLength))/(mSpeedLength+1);
             int voiceLeft;
             int voiceRight;
 
             backgroundPaint.setColor(Color.WHITE);
             //设置初始的7个音量调节位置和大小   上下都是不变的变得是左右位置
             for (int i = 0; i < mCurrVolum; i++) {
-                //想让第一个item 和最后一个距离左右mMarginLeft
-                //定义每个Item音量的宽度AndRight距离
                 voiceLeft = (i + 1) * mVoiceItemMarginLeft + i * mVoiceItemWidth;
                 voiceRight = (i + 1) * mVoiceItemMarginLeft + (i +1)* mVoiceItemWidth ;
                 canvas.drawRect(voiceLeft, mVoiceItemHeight, voiceRight, mMeasuredHeight - mVoiceItemHeight, backgroundPaint);
@@ -149,6 +177,7 @@ public class VoiceView extends View {
                     RectF rectF = new RectF();
                     rectF.set(pointLeft,0,pointLeft+mPointWidth,mPointWidth);
                     canvas.drawBitmap(mPointBitmap,null,rectF,null);
+                    Log.e("TAG","mCurrVolum:"+mCurrVolum);
                 }
 
             }
@@ -156,7 +185,6 @@ public class VoiceView extends View {
              backgroundPaint.setColor(Color.parseColor("#a4c2f4"));
             for (int i = mCurrVolum; i < mSpeedLength; i++) {
                 //定义每个Item音量的宽度
-                //想让第一个item 和最后一个距离左右mMarginLeftAndRight距离
                 voiceLeft = (i + 1) * mVoiceItemMarginLeft + i * mVoiceItemWidth;
                 voiceRight = (i + 1) * mVoiceItemMarginLeft + i * mVoiceItemWidth + mVoiceItemWidth;
                 canvas.drawRect(voiceLeft, mVoiceItemHeight, voiceRight, mMeasuredHeight - mVoiceItemHeight, backgroundPaint);
@@ -195,14 +223,23 @@ public class VoiceView extends View {
     private void getScrollLength(MotionEvent event) {
         int eventX= (int) (event.getX()+0.5f);
         int eventY= (int) event.getY();
+/*
+        if(eventX>0&&eventY>0&&eventX<mMeasuredWidth-mMeasuredHeight&&eventY<mMeasuredHeight){*/
 
-        if(eventX>0&&eventY>0&&eventX<mMeasuredWidth-mMeasuredHeight&&eventY<mMeasuredHeight){
-            int  marginLeftAndVoiceWidth= (mMeasuredWidth - mMeasuredHeight - mVoiceItemMarginLeft) / mSpeedLength;
+             //方案1：
+            int  marginLeftAndVoiceWidth= (mMeasuredWidth - mRightBitmapWidthAndHeight - mVoiceItemMarginLeft) / mSpeedLength;
+
+             //方案2：
+            //int  marginLeftAndVoiceWidth= mVoiceItemMarginLeft;
             mCurrVolum=eventX/marginLeftAndVoiceWidth;
+            if(mCurrVolum>mSpeedLength){
+                mCurrVolum=mSpeedLength;
+            }
+            Log.e("TAG","volum:"+mCurrVolum);
             if(mOnSpeedClickListener!=null){
                 mOnSpeedClickListener.onSpeedChange(mCurrVolum);
             }
-        }
+     /*   }*/
 
 
     }
