@@ -164,7 +164,6 @@ public class VoiceView extends View {
             mVoiceItemMarginLeft = (mMeasuredWidth - mRightBitmapWidthAndHeight - (mVoiceItemWidth * mSpeedLength))/(mSpeedLength+1);
             int voiceLeft;
             int voiceRight;
-
             backgroundPaint.setColor(Color.WHITE);
             //设置初始的7个音量调节位置和大小   上下都是不变的变得是左右位置
             for (int i = 0; i < mCurrVolum; i++) {
