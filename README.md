@@ -26,6 +26,7 @@
 
 这是布局，直接调用setOnSpeedClickListener（）方法可以设置监听得到速度<br/>
 直接调用setSpeedLength()可以直接设置我们音量的大小值 <br/>
+mVoiceView.setRightImage(R.mipmap.speed_img);可以设置右边图片，传null或者不调用这个方法默认不显示<br/>
 我们看一下效果图<br/>
 
 ![Image text](https://github.com/boboyuwu/pic/blob/master/pic1.png) <br/>
