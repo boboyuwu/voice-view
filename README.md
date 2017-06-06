@@ -29,4 +29,4 @@
 我们看一下效果图<br/>
 
 ![Image text](https://github.com/boboyuwu/pic/blob/master/pic1.png) <br/>
-![Image text](https://github.com/boboyuwu/pic/blob/master/pic2.png)
+
